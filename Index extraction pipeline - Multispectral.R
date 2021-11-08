@@ -1,6 +1,6 @@
-############################
-# Raster on R
-###########################
+###############################################################
+# Raster on R - INDEX Extraction By Plot Through QGIS Shapefile
+###############################################################
 library(raster)
 library(sp)
 library(tidyr)
@@ -10,7 +10,7 @@ library(readxl)
 library(dplyr)
 library(plyr)
 ###########################
-#Point Cloud
+
 rm(list=ls())
 #importing mosaics
 setwd("C:/Users/utente/Desktop/Ortho")
@@ -38,7 +38,6 @@ dir()
 #mosaic20 <- stack("10-06-21_seq.tif") #ok
 #mosaic21 <- stack("13-06-21_seq.tif") #ok
 #mosaic22 <- stack("15-06-21_seq.tif") #ok
-
 
 print(mosaic22)
 plot(mosaic22) #plot all
