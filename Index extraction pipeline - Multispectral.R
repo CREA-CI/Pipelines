@@ -17,40 +17,18 @@ rm(list=ls())
 setwd("C:/Users/utente/Desktop/Ortho")
 dir()
 
-#mosaic1 <- stack("03-03-21_seq.tif") #ok
-#mosaic2 <- stack("26-03-21_seq.tif") #ok
-#mosaic3 <- stack("01-04-21_seq.tif") #ok
-#mosaic4 <- stack("09-04-21_seq.tif") #ok
-#mosaic5 <- stack("16-04-21_seq.tif") #ok
-#mosaic6 <- stack("26-04-21_seq.tif") #ok
-#mosaic7 <- stack("29-04-21_seq.tif") #ok
-#mosaic8 <- stack("03-05-21_seq.tif") #ok
-#mosaic9 <- stack("07-05-21_seq.tif") #ok 
-#mosaic10 <- stack("10-05-21_seq.tif") #ok
-#mosaic11 <- stack("11-05-21_seq.tif") #ok
-#mosaic12 <- stack("14-05-21_seq.tif") #ok
-#mosaic13 <- stack("18-05-21_seq.tif") #ok
-#mosaic14 <- stack("25-05-21_seq.tif") #ok 
-#mosaic15 <- stack("27-05-21_seq.tif") #ok 
-#mosaic16 <- stack("29-05-21_seq.tif") #ok
-#mosaic17 <- stack("02-06-21_seq.tif") #ok
-#mosaic18 <- stack("05-06-21_seq.tif") #ok
-#mosaic19 <- stack("07-06-21_seq.tif") #ok
-#mosaic20 <- stack("10-06-21_seq.tif") #ok
-#mosaic21 <- stack("13-06-21_seq.tif") #ok
-#mosaic22 <- stack("15-06-21_seq.tif") #ok
+#mosaic <- stack("03-03-21_seq.tif") #ok
 
-print(mosaic22)
-plot(mosaic22) #plot all
-plot(mosaic22, 4) #plot only band 4 (NIR)
+print(mosaic)
+plot(mosaic) #plot all
+plot(mosaic, 4) #plot only band 4 (NIR)
 #plotRGB(mosaic) #plot composite image RGB
 #click(mosaic) #plot composite image - pixel composition
 
 # importing shapefiles (plots)
 setwd("C:/Users/utente/Desktop/Shapefile/Stress")
-dir()
 plots <- shapefile("SFstress")
-print(plots)
+#print(plots)
 plot(plots, add = T, col = "Yellow")
 #tail(plots)
 #head(plots)
@@ -77,11 +55,11 @@ plot_clip <- function(ortho, shape){
 }
 
 # clipping all plots - it takes a while
-rasterbyplots <- plot_clip(mosaic19, plots) # Choose the mosaic
+rasterbyplots <- plot_clip(mosaic, plots) # Choose the mosaic
 
-class(rasterbyplots)
-length(rasterbyplots)
-plot(rasterbyplots[[14]])
+#class(rasterbyplots)
+#length(rasterbyplots)
+#plot(rasterbyplots[[14]])
 
 # Removing soil using vegetation indices
 EX1 <- rasterbyplots[[14]] #low leaf
@@ -119,7 +97,6 @@ writeRaster(rasterbyplots[[344]], "parcela", overwrite = TRUE)
 dados <- list(parcela = stack("parcela"), mascara = stack("mascara"), shape = plots[344,])
 saveRDS(dados, "dados")
 
-
 # applying for all plots
 rbpws <- list()
 masks <- list()
@@ -136,10 +113,9 @@ plot(masks[[14]])
 print(rbpws[[14]])
 plot(rbpws[[14]])
 
-
 # Getting  indices estimates
-# camera mica sense (B, G, R, NIR, RE) 
-# camera parrot sequoia (G, R, RE, NIR) 
+# mica sense sensor (B, G, R, NIR, RE) 
+# parrot sequoia sensor (G, R, RE, NIR) 
 
 NDVI <- overlay(x = rbpws[[14]],
                  fun = function(Green, Red, RedEdge, NIR){
@@ -163,9 +139,6 @@ for (i in 1:length(rbpws)) {
   ))  
 }
 
-head(NDVI,50)
-tail(NDVI,50)
-
 # applying for all plots - PSRI
 PSRI <- data.frame()
 for (i in 1:length(rbpws)) {
@@ -178,8 +151,6 @@ for (i in 1:length(rbpws)) {
     PSRI = median(raster::as.matrix(idx.plot), na.rm = T)
   ))  
 }
-
-head(PSRI)
 
 # applying for all plots - GNDVI
 GNDVI <- data.frame()
@@ -194,8 +165,6 @@ for (i in 1:length(rbpws)) {
   ))  
 }
 
-head(GNDVI)
-
 # applying for all plots - NDRE
 NDRE <- data.frame()
 for (i in 1:length(rbpws)) {
@@ -208,8 +177,6 @@ for (i in 1:length(rbpws)) {
     NDRE = median(raster::as.matrix(idx.plot), na.rm = T)
   ))  
 }
-
-head(NDRE)
 
 # applying for all plots - TVI
 TVI <- data.frame()
@@ -224,8 +191,6 @@ for (i in 1:length(rbpws)) {
   ))  
 }
 
-head(TVI)
-
 # applying for all plots - CIRE
 CIRE <- data.frame()
 for (i in 1:length(rbpws)) {
@@ -238,8 +203,6 @@ for (i in 1:length(rbpws)) {
     CIRE = median(raster::as.matrix(idx.plot), na.rm = T)
   ))  
 }
-
-head(CIRE)
 
 # applying for all plots - Green
 Green <- data.frame()
@@ -254,8 +217,6 @@ for (i in 1:length(rbpws)) {
   ))  
 }
 
-head(Green)
-
 # applying for all plots - Red
 Red <- data.frame()
 for (i in 1:length(rbpws)) {
@@ -268,8 +229,6 @@ for (i in 1:length(rbpws)) {
     Red = median(raster::as.matrix(idx.plot), na.rm = T)
   ))  
 }
-
-head(Red)
 
 # applying for all plots - RedEdge
 RedEdge <- data.frame()
@@ -284,8 +243,6 @@ for (i in 1:length(rbpws)) {
   ))  
 }
 
-head(RedEdge)
-
 # applying for all plots - NIR
 NIR <- data.frame()
 for (i in 1:length(rbpws)) {
@@ -298,8 +255,6 @@ for (i in 1:length(rbpws)) {
     NIR = median(raster::as.matrix(idx.plot), na.rm = T)
   ))  
 }
-
-head(NIR)
 
 # applying for all plots - MCARI1
 MCARI1 <- data.frame()
@@ -314,8 +269,6 @@ for (i in 1:length(rbpws)) {
   ))  
 }
 
-head(MCARI1)
-
 # applying for all plots - MCARI2
 MCARI2 <- data.frame()
 for (i in 1:length(rbpws)) {
@@ -328,8 +281,6 @@ for (i in 1:length(rbpws)) {
     MCARI2 = median(raster::as.matrix(idx.plot), na.rm = T)
   ))  
 }
-
-head(MCARI2)
 
 ## Merging Shapefile informations
 setwd("C:/Users/utente/Desktop/Shapefile/Stress")
@@ -389,35 +340,6 @@ ggplot(All, aes(x=factor(Exp), y=`Index Value`)) +
   facet_wrap(~Index, scales = "free") +
   theme_minimal()
 
-# Rain Cloud - All 
-source("https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R")
-library("gghalves")
-
-ggplot(data = All, 
-       aes(x = factor(Index), y = `Index Value`, fill = factor(Index))) + 
-  geom_half_violin(aes(x=Index, y= `Index Value`), scale = "free")
-
-g <- 
-  ggplot(data = All, 
-         aes(x = factor(Index), y = `Index Value`, fill = factor(Index))) +
-  geom_flat_violin(position = position_nudge(x = .2, y = 0), trim = TRUE, alpha = .8, scale = "width") +
-  geom_point(aes(y = `Index Value`, color = factor(Index)), 
-             position = position_jitter(width = .15), size = .5, alpha = 0.8) +
-  geom_boxplot(width = .1, outlier.shape = NA, alpha = 0.5) +
-  geom_point(data = All, aes(x = factor(Index), y = mean), 
-             position = position_nudge(x = 0.3), size = 2.5) +
-  geom_errorbar(data = All, aes(ymin = lower, ymax = upper, y = mean), 
-                position = position_nudge(x = 0.3), width = 0)+
-  expand_limits(x = 5.25) +
-  guides(fill = FALSE) +
-  guides(color = FALSE) +
-  scale_color_manual() +
-  scale_fill_manual() +
-  #coord_flip() + # flip or not
-  theme_bw() +
-  theme(axis.title = element_text(size = 42),
-        axis.text=element_text(size=42))
-
 # Basic box plot
 boxplot(NDVI, main="NDVI 26-04-2021")
 
@@ -472,110 +394,3 @@ ggplot(results, aes(x=NDVI, color=Trat)) +
   scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9"))+
   labs(title="NDVI Histogram",x="NDVI", y = "Density")+
   theme_minimal()
-
-#===========
-"%||%" <- function(a, b) {
-  if (!is.null(a)) a else b
-}
-
-geom_flat_violin <- function(mapping = NULL, data = NULL, stat = "ydensity",
-                             position = "dodge", trim = TRUE, scale = "area",
-                             show.legend = NA, inherit.aes = TRUE, ...) {
-  layer(
-    data = data,
-    mapping = mapping,
-    stat = stat,
-    geom = GeomFlatViolin,
-    position = position,
-    show.legend = show.legend,
-    inherit.aes = inherit.aes,
-    params = list(
-      trim = trim,
-      scale = scale,
-      ...
-    )
-  )
-}
-
-#' @rdname ggplot2-ggproto
-#' @format NULL
-#' @usage NULL
-#' @export
-GeomFlatViolin <-
-  ggproto("GeomFlatViolin", Geom,
-          setup_data = function(data, params) {
-            data$width <- data$width %||%
-              params$width %||% (resolution(data$x, FALSE) * 0.9)
-            
-            # ymin, ymax, xmin, and xmax define the bounding rectangle for each group
-            data %>%
-              group_by(group) %>%
-              mutate(ymin = min(y),
-                     ymax = max(y),
-                     xmin = x,
-                     xmax = x + width / 2)
-            
-          },
-          
-          draw_group = function(data, panel_scales, coord) {
-            # Find the points for the line to go all the way around
-            data <- transform(data, xminv = x,
-                              xmaxv = x + violinwidth * (xmax - x))
-            
-            # Make sure it's sorted properly to draw the outline
-            newdata <- rbind(plyr::arrange(transform(data, x = xminv), y),
-                             plyr::arrange(transform(data, x = xmaxv), -y))
-            
-            # Close the polygon: set first and last point the same
-            # Needed for coord_polar and such
-            newdata <- rbind(newdata, newdata[1,])
-            
-            ggplot2:::ggname("geom_flat_violin", GeomPolygon$draw_panel(newdata, panel_scales, coord))
-          },
-          
-          draw_key = draw_key_polygon,
-          
-          default_aes = aes(weight = 1, colour = "grey20", fill = "white", size = 0.5,
-                            alpha = NA, linetype = "solid"),
-          
-          required_aes = c("x", "y")
-  )
-
-
-### Example:
-ggplot(diamonds, aes(cut, carat)) +
-  geom_flat_violin() +
-  coord_flip()
-
-
-ggplot(DS, aes(x = NDVI, y = factor(date), fill=Trat)) + geom_density_ridges2(rel_min_height = 0.015)
-
-ggplot(DS, aes(x=NDVI, y=factor(time), fill=Trat)) +
-  geom_density_ridges2() +
-  scale_fill_manual(values = c("#0072B250", "#D55E0050"), labels = c("Irr", "Str")) +
-    labs(
-    x = "NDVI",
-    y = "Time",
-    title = "NDVI Index",
-    subtitle = "Stress|No Stress Trial - Solace, LxR, Duro ") +
-  theme_minimal()
-    caption = "azevedo cvg | Source: CREA-CI")
-
-ggplot(DS, aes(x = NDVI, y = factor(time), fill = Trat, from = 0, to = 1)) + geom_density_ridges(
-  jittered_points = TRUE, scale = .95, rel_min_height = .01,
-  point_shape = "|", point_size = 0.7, size = 0.25,
-  position = position_points_jitter(height = 0)) +
-  ggtitle("NDVI", subtitle = "Solace + LxR + Duro Stress") +
-  scale_y_discrete(expand = c(0, 0)) +
-  scale_x_continuous(expand = c(0, 0), name = "NDVI") +
-  scale_fill_manual(values = c("#0072B250", "#D55E0050"), labels = c("Irr", "Str")) +
-  scale_color_manual(values = c("#0072B2","#D55E00"), guide = "none") +
-  scale_discrete_manual("point_color", values = c("#0072B2","#D55E00"), guide = "none") +
-  coord_cartesian(clip = "off") +
-  guides(fill = guide_legend(
-    override.aes = list(
-      fill = c("#0072B2A0","#D55E00A0"),
-      color = NA, point_color = NA))) +
-    theme_ridges(center = TRUE)
-
-rainplotA
