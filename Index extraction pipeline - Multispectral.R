@@ -1,5 +1,6 @@
 ###############################################################
 # Raster on R - INDEX Extraction By Plot Through QGIS Shapefile
+# Cleber Vinicius Giaretta Azevedo
 ###############################################################
 library(raster)
 library(sp)
