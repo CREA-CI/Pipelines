@@ -101,7 +101,6 @@ save(ground.01, file="ground.01.Rdata")
 rm(ground.plot,las.ground,plots)
 
 #loading canopy
-dir()
 load("ground.01.Rdata")
 load("ground.05.Rdata")
 load("ground.10.Rdata")
