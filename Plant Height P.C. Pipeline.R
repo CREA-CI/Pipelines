@@ -1,5 +1,6 @@
 ###############################
 # Plant Height via cloud points
+# Cleber Vinicius Giaretta Azevedo
 ###############################
 library(data.table)
 library(rlas)
@@ -39,7 +40,6 @@ plots <- shapefile("SFstress")
 #     add = T, 
 #     col = "Red")
 
-
 ## Auxiliary function to clip the point cloud using the QGIS shapefile
 cloud.clip <- function(cloud, shape){
   pc <- list()
@@ -64,7 +64,6 @@ save(canopy.plot, file="Canopy.PC.by.plot.Rdata")
 #plot(canopy.plot$`1`@data$Y, canopy.plot$`1`@data$Z) #vista frontal
 #plot(canopy.plot$`1`@data$X, canopy.plot$`1`@data$Z) #vista lateral
 #abline(h = canopy.plot$`1`, col = "Blue")
-
 
 #applying percentile to canopy height
 canopy.99 <- lapply(canopy.plot, function(x) { quantile(x@data$Z, .99) }) #99th percentile
