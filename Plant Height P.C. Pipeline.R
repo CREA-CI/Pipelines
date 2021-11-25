@@ -349,5 +349,3 @@ confint(model)
 sigma(model)*100/mean(CompleteData$Height,na.rm=T)
 
 write.csv(CompleteData, "PlantHeight.csv")
-getwd()
-dir()
