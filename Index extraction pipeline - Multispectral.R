@@ -17,9 +17,9 @@ rm(list=ls())
 setwd("C:/Users/utente/Desktop/Ortho")
 dir()
 
-#mosaic <- stack("03-03-21_seq.tif") #ok
+mosaic <- stack("03-03-21_seq.tif") #ok
 
-print(mosaic)
+#print(mosaic)
 plot(mosaic) #plot all
 plot(mosaic, 4) #plot only band 4 (NIR)
 #plotRGB(mosaic) #plot composite image RGB
@@ -28,19 +28,13 @@ plot(mosaic, 4) #plot only band 4 (NIR)
 # importing shapefiles (plots)
 setwd("C:/Users/utente/Desktop/Shapefile/Stress")
 plots <- shapefile("SFstress")
-#print(plots)
 plot(plots, add = T, col = "Yellow")
-#tail(plots)
-#head(plots)
+
 #Getting specific info
 #crs(mosaic) #reference system
 #crs(plots) #reference system
 #extent(plots) #limits
 #length(plots) #number of features (plots)
-#plot(plots[1,]) #plot feature number 1
-#head(plots@data, 6)
-# value from name$... are the variables of the shapefile (same as qgis attribute table) e.g.:
-#plots$ID #plot names
 
 #clipping raster by plots - a function
 plot_clip <- function(ortho, shape){
@@ -54,14 +48,13 @@ plot_clip <- function(ortho, shape){
   return(plot_raster)
 }
 
-# clipping all plots - it takes a while
+# clipping all plots - it takes a while, depending on the number of plots and raster size
 rasterbyplots <- plot_clip(mosaic, plots) # Choose the mosaic
 
-#class(rasterbyplots)
 #length(rasterbyplots)
 #plot(rasterbyplots[[14]])
 
-# Removing soil using vegetation indices
+# Removing soil using vegetation indices - via image segmentation - find a best index & threshold 
 EX1 <- rasterbyplots[[14]] #low leaf
 EX2  <- rasterbyplots[[34]] # high leaf
 EX1.RemSoil<- fieldIndex(mosaic = EX1, Green = 1, Red = 2, RedEdge=3, NIR=4, 
@@ -76,7 +69,7 @@ EX1.RemSoil <- fieldIndex(mosaic = EX1, Green = 1, Red = 2, RedEdge=3, NIR=4,
 EX2.RemSoil <- fieldIndex(mosaic = EX2, Green = 1, Red = 2, RedEdge=3, NIR=4, 
                           index = c("NDRE", "PSRI", "NDVI", "GNDVI", "RVI", "TVI",
                                     "CVI", "CIG", "CIRE", "DVI", "SCI"), plot = T)
-hist(EX1.RemSoil$GNDVI) # Image segmentation start from 0.7 (soil and plants) -choose best index to plot
+hist(EX1.RemSoil$GNDVI) # Image segmentation start (soil and plants) - choose best index and threshold 
 hist(EX2.RemSoil$GNDVI)
 
 EX1.RemSoil<- fieldMask(mosaic = EX1, Green = 1, Red = 2, RedEdge=3, NIR=4, 
@@ -92,10 +85,10 @@ EX1.RemSoil$mask
 plot(EX1.RemSoil$mask)
 
 # saving rasters or masks
-writeRaster(EX1.RemSoil$mask, "mascara", overwrite = TRUE)
-writeRaster(rasterbyplots[[344]], "parcela", overwrite = TRUE)
-dados <- list(parcela = stack("parcela"), mascara = stack("mascara"), shape = plots[344,])
-saveRDS(dados, "dados")
+#writeRaster(EX1.RemSoil$mask, "mascara", overwrite = TRUE)
+#writeRaster(rasterbyplots[[344]], "parcela", overwrite = TRUE)
+#dados <- list(parcela = stack("parcela"), mascara = stack("mascara"), shape = plots[344,])
+#saveRDS(dados, "dados")
 
 # applying for all plots
 rbpws <- list()
@@ -114,7 +107,7 @@ print(rbpws[[14]])
 plot(rbpws[[14]])
 
 # Getting  indices estimates
-# mica sense sensor (B, G, R, NIR, RE) 
+# micasense sensor (B, G, R, NIR, RE) 
 # parrot sequoia sensor (G, R, RE, NIR) 
 
 NDVI <- overlay(x = rbpws[[14]],
@@ -125,7 +118,7 @@ plot(as.raster(NDVI))
 median(raster::as.matrix(NDVI), na.rm = T) # median for the index. Much better than mean
 plots@data[750, "fid"] #ID in the experimental design
 
-##### APPLYING MULTISPECTRAL INDICES #####
+#APPLYING MULTISPECTRAL INDICES - add/remove the indexes as you wish
 # applying for all plots - NDVI
 NDVI <- data.frame()
 for (i in 1:length(rbpws)) {
