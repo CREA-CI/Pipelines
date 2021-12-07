@@ -118,7 +118,7 @@ plot(as.raster(NDVI))
 median(raster::as.matrix(NDVI), na.rm = T) # median for the index. Much better than mean
 plots@data[750, "fid"] #ID in the experimental design
 
-#APPLYING MULTISPECTRAL INDICES - add/remove the indexes as you wish
+#APPLYING MULTISPECTRAL INDICES - add/remove the indexes as you wish - a library here would be nice, get in contact if you want to help with that.
 # applying for all plots - NDVI
 NDVI <- data.frame()
 for (i in 1:length(rbpws)) {
